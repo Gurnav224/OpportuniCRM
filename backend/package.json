@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "OpportuniCRM is a cutting-edge Customer Relationship Management (CRM) tool designed to streamline lead management and supercharge your sales process. Whether you're a small business or a large enterprise, OpportuniCRM provides the tools you need to nurture leads, track opportunities, and close deals efficiently.",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon  --env-file=.env index.js development ",
+    "start": "node   --env-file=.env index.js production"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  },
+  "repository": "https://github.com/Gurnav224/OpportuniCRM/backend",
+  "author": "chaudharyg856@gmail.com",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
