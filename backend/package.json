@@ -10,8 +10,10 @@
     "start": "node   --env-file=.env index.js production"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.21.2",
-    "mongoose": "^8.9.5"
+    "mongoose": "^8.9.5",
+    "morgan": "^1.10.0"
   },
   "repository": "https://github.com/Gurnav224/OpportuniCRM/backend",
   "author": "chaudharyg856@gmail.com",
