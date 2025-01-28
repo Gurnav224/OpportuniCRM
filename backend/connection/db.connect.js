@@ -1,0 +1,22 @@
+import { connect } from "mongoose";
+
+let uriObject = {
+  production: process.env.MONGODB_URI_PRODUCTION,
+  development: process.env.MONGODB_URI_LOCAL,
+};
+
+const mode = process.argv[2];
+
+
+export const dbConnect = async () => {
+    try {
+        const conn =  await connect(uriObject[mode],{dbName:'opportuniCRM_DB'});
+        console.log(`
+            successfully connected to database,
+            mode ${mode},
+            host: ${conn.connection.host}, 
+            dbName: ${conn.connection.db.databaseName}`)
+    } catch (error) {
+        console.error('Error while connecting to database', error)
+    }
+};
