@@ -1,1 +1,2 @@
 # OpportuniCRM
+OpportuniCRM is a Customer Relationship Management (CRM) platform designed to help businesses manage their sales pipeline, customer interactions, and growth opportunities efficiently. It focuses on enhancing business relationships, improving customer retention, and driving sales by streamlining workflows and providing actionable insights.

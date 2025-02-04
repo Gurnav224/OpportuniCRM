@@ -28,7 +28,7 @@ const Dashboard = () => {
         <Sidebar />
         {/* Main Content */}
         <main className="border w-full">
-          <h1 className="text-2xl py-4 text-center">Main Content</h1>
+          <h1 className="text-2xl py-4 text-center">Overview </h1>
           <hr />
           {loading && <p>{loading}</p>}
           {error && <p>{error}</p>}
@@ -36,7 +36,7 @@ const Dashboard = () => {
           <ul className="px-3 py-3 flex gap-4 flex-wrap">
             {filterLeads?.map((lead) => (
               <li key={lead._id}>
-                <Link to={`/leads/${lead._id}`}>{lead.name}</Link>
+                <Link className="font-medium text-blue-600 dark:text-blue-500 hover:underline" to={`/leads/${lead._id}`}>{lead.name}</Link>
               </li>
             ))}
           </ul>
@@ -70,7 +70,7 @@ const Dashboard = () => {
                 Contacted
               </button>
             </div>
-            <Link to={"/newlead"} className="px-3 py-3 block">
+            <Link  to={"/newlead"} className="px-3 py-3 block font-medium text-blue-600 dark:text-blue-500 underline">
               Add New Lead
             </Link>
           </div>

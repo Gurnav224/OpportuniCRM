@@ -1,14 +1,16 @@
 import { createContext, useContext, useEffect } from "react";
 import { useFetch } from "../custom/useFetch";
+import { data } from "react-router-dom";
 
 const LeadContext = createContext();
 
 export const LeadProvider = ({ children }) => {
   const {
-    items: leads,
+    leads,
     get,
     loading,
     error,
+    agents
   } = useFetch("http://localhost:3000/api");
 
   useEffect(() => {
@@ -16,7 +18,7 @@ export const LeadProvider = ({ children }) => {
   }, [get]);
 
   return (
-    <LeadContext.Provider value={{ leads, get, loading, error }}>
+    <LeadContext.Provider value={{ leads, agents,  get, loading, error }}>
       {children}
     </LeadContext.Provider>
   );
