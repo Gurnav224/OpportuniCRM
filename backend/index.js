@@ -4,6 +4,7 @@ import morgan from "morgan";
 import cors from "cors"
 import leadsRouter from "./routes/lead.routes.js";
 import agentRouter from './routes/agent.routes.js';
+import commentRouter from './routes/comment.routes.js'
 
 const app = express();
 
@@ -28,7 +29,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api' ,leadsRouter);
-app.use('/api',agentRouter)
+app.use('/api',agentRouter);
+app.use('/api',commentRouter )
 
 
 const PORT = process.env.PORT || 5000;

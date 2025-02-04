@@ -20,6 +20,12 @@ const leadSchema = new Schema({
   salesAgent: {
     type: Schema.Types.ObjectId,
     required: [true, "Sales Agent is required"],
+    ref:'Agent'
+  },
+  comments:{
+    type:Schema.Types.ObjectId,
+    required:[true, 'Comment is required'],
+    ref:'Comment'
   },
   status: {
     type: String,

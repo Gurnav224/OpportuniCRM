@@ -90,9 +90,8 @@ export const getLead = async (req, res) => {
       error: `Invalid input: 'source' must be one of [ "Website" , "Referral" , "Cold Call" , "Advertisement" , "Email" , "Other" ,].`,
     });
   }
-
   try {
-    const leads = await Lead.find(req.query);
+    const leads = await Lead.find(req.query).populate('salesAgent');
     res.status(200).json(leads);
   } catch (error) {
     console.error("error failed to get the all leads", error);
@@ -100,69 +99,97 @@ export const getLead = async (req, res) => {
   }
 };
 
-export const updateLead = async (req, res) => {
-    const { leadId } = req.params;
-    const {name, source, salesAgent ,status , tags ,  timeToClose , priority} = req.body;
 
-    const requiredFields = ["name","source","salesAgent","status","tags", "timeToClose", "priority"];
+export const getLeadById = async (req, res) => {
+  const {leadId} = req.params;
+  console.log(leadId)
+  try {
+    const lead = await Lead.findById({_id:leadId}).populate('salesAgent');
+    res.status(200).json(lead)
+  } catch (error) {
+    console.error('failed to get lead by id', error);
+    res.status(500).json({error:'server error'})
+    
+  }
+}
+
+ 
+export const updateLead = async (req, res) => {
+  const { leadId } = req.params;
+  const { name, source, salesAgent, status, tags, timeToClose, priority } =
+    req.body;
+
+  const requiredFields = [
+    "name",
+    "source",
+    "salesAgent",
+    "status",
+    "tags",
+    "timeToClose",
+    "priority",
+  ];
 
   try {
-
-    if(!mongoose.Types.ObjectId.isValid(leadId)){
-       return res.status(400).json({error:'Lead Id Must be valid'})
+    if (!mongoose.Types.ObjectId.isValid(leadId)) {
+      return res.status(400).json({ error: "Lead Id Must be valid" });
     }
 
-    for(let field of requiredFields){
-        if(!req.body[field]) {
-            return res.status(400).json({error:`Invalid input: ${field} is required`})
-        }
+    for (let field of requiredFields) {
+      if (!req.body[field]) {
+        return res
+          .status(400)
+          .json({ error: `Invalid input: ${field} is required` });
+      }
     }
 
     const agent = await Agent.findById(salesAgent);
 
-    if(!agent){
-        return res.status(404).json({ error: `Sales agent with ID ${salesAgent} not found.` })
+    if (!agent) {
+      return res
+        .status(404)
+        .json({ error: `Sales agent with ID ${salesAgent} not found.` });
     }
 
-
-    const lead = await Lead.findOneAndUpdate({_id:leadId},{
+    const lead = await Lead.findOneAndUpdate(
+      { _id: leadId },
+      {
         name,
         source,
         salesAgent,
         status,
         tags,
         timeToClose,
-        priority
-    },{new:true})
+        priority,
+      },
+      { new: true }
+    );
 
-res.status(200).json(lead)
-    
+    res.status(200).json(lead);
   } catch (error) {
-    console.error('error to update lead',error);
-    res.status(500).json({error:'server error'})
+    console.error("error to update lead", error);
+    res.status(500).json({ error: "server error" });
   }
 };
 
 export const deleteLead = async (req, res) => {
-     const { leadId } = req.params;
-     
-   
+  const { leadId } = req.params;
 
-    try {
-        if(!mongoose.Types.ObjectId.isValid(leadId)){
-            return res.status(400).json({error:'Lead Id Must be valid'})
-         }
-
-         const lead = await Lead.findByIdAndDelete(leadId);
-
-         if(!lead) {
-            return res.status(404).json({error:`Lead with ID ${leadId} not found.`})
-         }
-
-         res.status(200).json({message:'Lead deleted successfully'})
-
-    } catch (error) {
-        console.error('failed to delete the lead',error);
-        res.status(500).json({error:'server error'})
+  try {
+    if (!mongoose.Types.ObjectId.isValid(leadId)) {
+      return res.status(400).json({ error: "Lead Id Must be valid" });
     }
+
+    const lead = await Lead.findByIdAndDelete(leadId);
+
+    if (!lead) {
+      return res
+        .status(404)
+        .json({ error: `Lead with ID ${leadId} not found.` });
+    }
+
+    res.status(200).json({ message: "Lead deleted successfully" });
+  } catch (error) {
+    console.error("failed to delete the lead", error);
+    res.status(500).json({ error: "server error" });
+  }
 };
