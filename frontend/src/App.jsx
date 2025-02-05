@@ -9,6 +9,7 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import { LeadProvider } from "./context/LeadContext";
 import LeadDetails from "./pages/LeadDetails";
+import LeadStatusView from "./pages/LeadStatusView";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/leads/:leadId" element={<LeadDetails/>} />
+          <Route path="/statusview" element={<LeadStatusView/>} />
         </Routes>
       </Router>
     </LeadProvider>
