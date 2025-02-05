@@ -15,6 +15,9 @@ const Sidebar = () => {
           <Link className="font-medium text-blue-600 dark:text-blue-500 hover:underline" to={'/sales'}>Sales</Link>
         </li>
         <li>
+        <Link className="font-medium text-blue-600 dark:text-blue-500 hover:underline" to={'/statusview'}>Lead status view</Link>
+        </li>
+        <li>
           <Link className="font-medium text-blue-600 dark:text-blue-500 hover:underline" to={'/agents'}>Agents</Link>
         </li>
         <li>
