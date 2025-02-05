@@ -5,13 +5,18 @@ import { useEffect, useState } from "react";
 import { filterByStatus } from "../utils/filterByStatus";
 
 const Dashboard = () => {
-  const { leads, loading, error } = useLead();
+  const { leads, loading, error , get} = useLead();
   const [filterLeads, setFilterLeads] = useState([]);
 
   // re-render every time when leads array change
   useEffect(() => {
+    get('/leads')
+  }, [get]);
+
+  useEffect(() => {
     setFilterLeads(leads);
-  }, [leads]);
+
+  },[leads])
 
   const handleFilterChange = (status) => {
     setFilterLeads(

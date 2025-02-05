@@ -202,7 +202,7 @@ const NewLead = () => {
               className="py-2 px-3 bg-black w-40 text-2xl text-white"
               type="submit"
             >
-              upadte Lead
+              update Lead
             </button>
           </form>
         </>
