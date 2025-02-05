@@ -55,6 +55,7 @@ export const createLead = async (req, res) => {
 };
 
 export const getLead = async (req, res) => {
+  const query = {};
   if (
     req.query.salesAgent &&
     !mongoose.Types.ObjectId.isValid(req.query.salesAgent)
@@ -66,7 +67,7 @@ export const getLead = async (req, res) => {
 
   if (
     req.query.status &&
-    !["New", "Contacted", "Qualified", "Proposal Sent", "Close"].includes(
+    !["New", "Contacted", "Qualified", "Proposal Sent", "Closed"].includes(
       req.query.status
     )
   ) {
@@ -90,8 +91,18 @@ export const getLead = async (req, res) => {
       error: `Invalid input: 'source' must be one of [ "Website" , "Referral" , "Cold Call" , "Advertisement" , "Email" , "Other" ,].`,
     });
   }
+
+ 
+  if(req.query.salesAgent) {
+    query.salesAgent = req.query.salesAgent
+  }
+
+  if(req.query.status) {
+    query.status = req.query.status;
+  }
+
   try {
-    const leads = await Lead.find(req.query).populate('salesAgent');
+    const leads = await Lead.find(query).populate('salesAgent');
     res.status(200).json(leads);
   } catch (error) {
     console.error("error failed to get the all leads", error);
