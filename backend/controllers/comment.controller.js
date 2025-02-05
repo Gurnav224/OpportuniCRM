@@ -1,9 +1,9 @@
 import { Comment } from "../models/comment.model.js"
 
 export const createComment = async (req, res) => {
-    const {text, author } = req.body;
+    const {text, author , lead} = req.body;
     try {
-        const comment = new Comment({text, author});
+        const comment = new Comment({text, author, lead});
         await comment.save();
         res.status(200).json(comment)
     } catch (error) {

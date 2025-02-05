@@ -7,6 +7,7 @@ const LeadDetails = () => {
   const [newComment, setNewComment] = useState({
     author: "",
     text: "",
+    lead:""
   });
 
   const { get, error, loading, lead, post , comments} = useFetch(
@@ -24,7 +25,8 @@ const LeadDetails = () => {
 
     setNewComment({
         author:"",
-        text:""
+        text:"",
+        lead:""
     })
 
   };
@@ -98,6 +100,7 @@ const LeadDetails = () => {
                     ...prev,
                     text: e.target.value,
                     author: lead?.salesAgent?._id,
+                    lead:lead?._id
                   }))
                 }
                 name="comment"

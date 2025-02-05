@@ -15,7 +15,7 @@ export const leadSource = [
     "Contacted",
     "Qualified",
     "Proposal Sent",
-    "Close",
+    "Closed",
   ];
 
   export const crmTags = [

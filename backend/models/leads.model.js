@@ -24,13 +24,12 @@ const leadSchema = new Schema({
   },
   comments:{
     type:Schema.Types.ObjectId,
-    required:[true, 'Comment is required'],
     ref:'Comment'
   },
   status: {
     type: String,
     required: true,
-    enum: ["New", "Contacted", "Qualified", "Proposal Sent", "Close"],
+    enum: ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"],
     default: "New",
   },
   tags: [

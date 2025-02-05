@@ -19,7 +19,7 @@ const Leads = () => {
   },[get]);
 
 
-  const status = ["New", "Contacted", "Qualified", "Proposal Sent", "Close"];
+  const status = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
 
   const filterByStatus = (e) => {
     const { value } = e.target;
