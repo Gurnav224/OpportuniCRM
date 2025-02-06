@@ -92,17 +92,31 @@ export const getLead = async (req, res) => {
     });
   }
 
- 
-  if(req.query.salesAgent) {
-    query.salesAgent = req.query.salesAgent
+  if (req.query.salesAgent) {
+    query.salesAgent = req.query.salesAgent;
   }
 
-  if(req.query.status) {
+  if (req.query.status) {
     query.status = req.query.status;
   }
 
+  if (req.query.name) {
+    const agent = await Agent.findOne({ name: req.query.name });
+    if (!agent) {
+      return res.status(404).json({ message: "Agent not found" });
+    }
+    query.salesAgent = agent._id;
+  }
+
+  let sortQuery = {};
+
+  if (req.query.sortBy) {
+    const sortOrder = req.query.order === "desc" ? -1 : 1;
+    sortQuery[req.query.sortBy] = sortOrder;
+  }
+
   try {
-    const leads = await Lead.find(query).populate('salesAgent');
+    const leads = await Lead.find(query).populate("salesAgent").sort(sortQuery);
     res.status(200).json(leads);
   } catch (error) {
     console.error("error failed to get the all leads", error);
@@ -110,21 +124,18 @@ export const getLead = async (req, res) => {
   }
 };
 
-
 export const getLeadById = async (req, res) => {
-  const {leadId} = req.params;
-  console.log(leadId)
+  const { leadId } = req.params;
+  console.log(leadId);
   try {
-    const lead = await Lead.findById({_id:leadId}).populate('salesAgent');
-    res.status(200).json(lead)
+    const lead = await Lead.findById({ _id: leadId }).populate("salesAgent");
+    res.status(200).json(lead);
   } catch (error) {
-    console.error('failed to get lead by id', error);
-    res.status(500).json({error:'server error'})
-    
+    console.error("failed to get lead by id", error);
+    res.status(500).json({ error: "server error" });
   }
-}
+};
 
- 
 export const updateLead = async (req, res) => {
   const { leadId } = req.params;
   const { name, source, salesAgent, status, tags, timeToClose, priority } =
