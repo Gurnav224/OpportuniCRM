@@ -19,6 +19,7 @@ export const leadSource = [
   ];
 
   export const crmTags = [
+    "Select",
     "FollowUp",
     "HighValue",
     "Leads",
@@ -32,4 +33,4 @@ export const leadSource = [
     "LeadNurturing",
   ];
 
-  export const priority = ["High", "Medium", "Low"];
+  export const priorityOptions = ["High", "Medium", "Low"];
