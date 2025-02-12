@@ -2,6 +2,7 @@ import { Comment } from "../models/comment.model.js"
 
 export const createComment = async (req, res) => {
     const {text, author , lead} = req.body;
+
     try {
         const comment = new Comment({text, author, lead});
         await comment.save();
@@ -15,10 +16,9 @@ export const createComment = async (req, res) => {
 
 
 export const getComments = async (req, res) => {
-     const {author} = req.query;
-     console.log(author)
+     const { lead} = req.query;
     try {
-        const comments = await Comment.find({author:author}).populate('author').exec();
+        const comments = await Comment.find({lead}).populate('author').exec();
         res.status(200).json(comments)
     } catch (error) {
         console.error('failed to get all comments', error)
