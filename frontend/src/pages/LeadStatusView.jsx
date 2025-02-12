@@ -1,17 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import useLead from "../context/LeadContext";
 import { useEffect, useState } from "react";
+import { leadStatus, priorityOptions } from "../utils/selectValues";
+import SelectComponent from "../components/Select";
 
 const LeadStatusView = () => {
-  const options = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
+  const { leads, get, agents } = useLead();
   const [filterLeads , setFilterLeads] = useState()
 
-  const { leads, get, agents } = useLead();
-  const [selected, setSelected] = useState("New");
+
+  const [searchParams , setSearchParams] = useSearchParams();
+  const status = searchParams.get('status');
+  const name = searchParams.get('name');
+  const priority = searchParams.get('priority');
+  
+  const newParams = new URLSearchParams(searchParams);
 
   useEffect(() => {
-    get("/leads", { status: selected });
-  }, [get, selected]);
+    get("/leads", { status , name , priority});
+  }, [get, status, name, priority]);
 
   useEffect(() =>{
     setFilterLeads(leads)
@@ -21,15 +28,41 @@ const LeadStatusView = () => {
     get("/agents");
   }, [get]);
 
+  const agentNames = agents.map((agent) => agent.name);
+
+
+  const filterByStatus = (e) => {
+    const {value} = e.target;
+    if(value){
+      newParams.set('status', value)
+    }
+    else{
+      newParams.delete('status')
+    }
+    setSearchParams(newParams)
+  }
+
 
   const filterBySalesAgent = (e) => {
      const {value:agent} = e.target;
-      setFilterLeads(leads.filter((lead) => lead.salesAgent.name === agent))
+     if(agent){
+      newParams.set('name',agent)
+     }
+     else{
+      newParams.delete('name')
+     }
+     setSearchParams(newParams)
   }
 
   const filterByPriority = (e) => {
     const {value:priority} = e.target;
-    setFilterLeads(leads.filter((lead) => lead.priority === priority))
+    if(priority){
+      newParams.set('priority',priority)
+    }
+    else{
+      newParams.delete('priority')
+    }
+    setSearchParams(newParams)
   }
 
 
@@ -43,84 +76,89 @@ const LeadStatusView = () => {
   
 
   return (
-    <>
-      <h1 className="font-medium text-3xl text-center py-4 px-3">
-        Leads By Status
-      </h1>
-      <div className="container flex py-3 px-3 mx-auto">
-        <div className="w-40">
+    <div className="min-h-screen bg-gray-100 py-6">
+      {/* Page Title */}
+      <h1 className="text-3xl font-bold text-center text-gray-800">Leads By Status</h1>
+
+      <div className="flex flex-col md:flex-row container mx-auto py-6 gap-6">
+        {/* Sidebar */}
+        <aside className="w-full md:w-64 bg-white shadow-md p-5 rounded-lg">
           <Link
-            className="py-4  text-2xl font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            className="text-2xl font-semibold text-blue-600 dark:text-blue-500 hover:underline block"
             to="/"
           >
-            Back To Dashboard
+            ⬅ Back To Dashboard
           </Link>
-        </div>
-        <div className="border w-full">
-          <div className="m-3">
-            <h2 className="text-2xl font-bold border text-center py-3">
-              Lead List By Status
-            </h2>
-          </div>
-          <hr />
-          <div className="py-3 px-4">
-            <label className="mx-3" htmlFor="status">
-              Status:
-            </label>
-            <select
-              className="border py-2 px-3"
-              onChange={(e) => setSelected(e.target.value)}
+        </aside>
+
+        {/* Lead List Section */}
+        <section className="w-full bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold text-center border-b pb-3 text-gray-800">
+            Lead List By Status
+          </h2>
+
+          {/* Filter by Status */}
+          <div className="my-4">
+            <SelectComponent
+              options={leadStatus}
               name="status"
-              id="status"
-            >
-              {options.map((value, index) => (
-                <option key={index} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
+              label="Status"
+              inputChangeHandler={filterByStatus}
+            />
           </div>
-          <hr />
-          <ul className="py-3 px-3">
-            {filterLeads?.map((lead) => (
-              <li key={lead._id} className="py-1 px-3">
-                {lead.name} - Sales Agent: {lead.salesAgent.name}
-              </li>
-            ))}
+
+          {/* Lead List */}
+          <ul className="w-full bg-gray-50 shadow-md rounded-lg overflow-hidden">
+            <li className="grid grid-cols-2 bg-gray-200 py-3 px-4 border-b text-gray-700 font-medium text-lg">
+              <p className="text-left">Lead Name</p>
+              <p className="text-left">Sales Agent</p>
+            </li>
+            {filterLeads?.length > 0 ? (
+              filterLeads.map((lead) => (
+                <li
+                  key={lead._id}
+                  className="grid grid-cols-2 py-3 px-4 border-b hover:bg-gray-100 text-gray-800 text-left"
+                >
+                  <p>{lead.name}</p>
+                  <p>{lead.salesAgent.name}</p>
+                </li>
+              ))
+            ) : (
+              <li className="py-3 px-4 text-gray-500">No Leads Found</li>
+            )}
           </ul>
-          <hr />
-          {/* Filters */}
-          <div className="py-3 px-4 flex gap-5">
-            <span>Filters: </span>
-            <div>
-            <label className="mx-3" htmlFor="status">
-              Sales Agent:
-            </label>
-            <select className="border px-3 py-1" onChange={ (e) =>  filterBySalesAgent(e)} name="status" id="status">
-              {agents.map((agent) => (
-                <option key={agent._id} value={agent.name}>
-                  {agent.name}
-                </option>
-              ))}
-            </select>
-            </div>
-            <div>
-                <label className="mx-2" htmlFor="priority">Priority</label>
-                <select onChange={filterByPriority} className="border px-3 py-1" name="priority" id="priority">
-                    <option value="">select</option>
-                    <option value="High">High</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Low">Low</option>
-                </select>
-            </div>
-            
+
+          {/* Filters Section */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Filter by Sales Agent */}
+            <SelectComponent
+              options={agentNames}
+              label="Sales Agent"
+              name="agent"
+              inputChangeHandler={filterBySalesAgent}
+            />
+
+            {/* Filter by Priority */}
+            <SelectComponent
+              options={priorityOptions}
+              name="priority"
+              label="Priority"
+              inputChangeHandler={filterByPriority}
+            />
           </div>
-          <div className="py-3 px-4">
-            <button onClick={sortByTimeToClose}>Sort by: Time to Close</button>
+
+          {/* Sorting Button */}
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={sortByTimeToClose}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg transition-all"
+            >
+              Sort by: Time to Close
+            </button>
           </div>
-        </div>
+        </section>
       </div>
-    </>
+    </div>
   );
 };
 

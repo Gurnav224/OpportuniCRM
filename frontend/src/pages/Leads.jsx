@@ -1,37 +1,67 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import useLead from "../context/LeadContext";
+import { leadStatus, crmTags, leadSource } from "../utils/selectValues";
+import SelectComponent from "../components/Select";
 
 const Leads = () => {
   const { leads, get, agents, error, loading } = useLead();
-  const [selectedName, setSelectedName] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const name = searchParams.get("name") || "";
+  const status = searchParams.get("status") || "";
+  const tag = searchParams.get("tag") || "";
+  const source = searchParams.get("source") || "";
 
   useEffect(() => {
-    get("/leads");
-    if (selectedName) {
-      get("/leads", { name: selectedName });
-    }
-
-    if (selectedStatus) {
-      get("/leads", { status: selectedStatus });
-    }
-  }, [get, selectedName, selectedStatus]);
+    get("/leads", { status, name, tag, source });
+  }, [get, name, status, tag, source]);
 
   useEffect(() => {
     get("/agents");
   }, [get]);
+  const newParams = new URLSearchParams(searchParams);
 
-  const status = ["New", "Contacted", "Qualified", "Proposal Sent", "Closed"];
+  const agentNames = agents.map((agent) => agent.name);
 
   const filterByStatus = (e) => {
     const { value } = e.target;
-    setSelectedStatus(value);
+    if (value) {
+      newParams.set("status", value);
+    } else {
+      newParams.delete("status");
+    }
+    setSearchParams(newParams);
   };
 
   const filterBySalesAgent = (e) => {
     const { value } = e.target;
-    setSelectedName(value);
+    if (value) {
+      newParams.set("name", value);
+    } else {
+      newParams.delete("name");
+    }
+    setSearchParams(newParams);
+  };
+
+  const filterByTagName = (e) => {
+    const { value } = e.target;
+    if (value) {
+      newParams.set("tag", value);
+    } else {
+      newParams.delete("tag");
+    }
+    setSearchParams(newParams);
+  };
+
+  const filterBySource = (e) => {
+    const { value } = e.target;
+    if (value) {
+      newParams.set("source", value);
+    } else {
+      newParams.delete("source");
+    }
+    setSearchParams(newParams);
   };
 
   const sortByPriority = () => {
@@ -43,35 +73,47 @@ const Leads = () => {
   };
 
   return (
-    <div className="flex container mx-auto py-4 gap-2">
+    <div className="flex flex-col md:flex-row container mx-auto py-6 gap-6">
       {/* Sidebar */}
-      <div className="w-40">
+      <aside className="w-full md:w-64 bg-white shadow-lg p-5 rounded-lg">
         <Link
-          className="py-4  text-2xl font-medium text-blue-600 dark:text-blue-500 hover:underline"
+          className="text-2xl font-semibold text-blue-600 dark:text-blue-500 hover:underline block"
           to={"/"}
         >
-          Back To Dashboard
+          ⬅ Back To Dashboard
         </Link>
-      </div>
-      {/* Lead List */}
-      <div className="border w-full">
-        <h1 className="text-3xl text-center my-3">Lead Overview</h1>
-        <hr />
-        {loading && <p>loading.........</p>}
-        {error && <p>{error}</p>}
-        {leads.length === 0 && <p>No Leads Found</p>}
+      </aside>
+
+      {/* Lead List Section */}
+      <section className="w-full bg-white shadow-lg rounded-lg p-6">
+        <h1 className="text-3xl font-semibold text-gray-800 text-center">Lead Overview</h1>
+        <hr className="my-4 border-gray-300" />
+
+        {/* Loading & Error Messages */}
+        {loading && <p className="text-xl py-3 text-green-500 text-center">Loading...</p>}
+        {error && <p className="text-xl py-3 text-red-500 text-center">{error}</p>}
+        {leads.length === 0 && (
+          <p className="text-xl py-3 text-red-500 text-center">No Leads Found</p>
+        )}
+
+        {/* Leads Table */}
         <ul className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <li className="grid grid-cols-5 bg-gray-100 py-3 px-4 border-b text-gray-700 font-medium text">
+          {/* Table Header */}
+          <li className="grid grid-cols-5 bg-gray-100 py-3 px-4 border-b text-gray-700 font-semibold text-lg">
             <p className="min-w-[160px]">Name</p>
             <p className="min-w-[160px]">Status</p>
             <p className="min-w-[160px]">Sales Agent</p>
             <p className="min-w-[160px]">Priority</p>
             <p className="min-w-[160px]">Time To Close</p>
           </li>
-          {leads.map((lead) => (
+
+          {/* Table Rows */}
+          {leads.map((lead, index) => (
             <li
               key={lead._id}
-              className="grid grid-cols-5 py-3 px-4 border-b hover:bg-gray-50 text-gray-800 text-left"
+              className={`grid grid-cols-5 py-3 px-4 border-b ${
+                index % 2 === 0 ? "bg-gray-50" : "bg-white"
+              } hover:bg-gray-100 transition-all`}
             >
               <p className="min-w-[160px]">
                 <Link
@@ -81,69 +123,58 @@ const Leads = () => {
                   {lead.name}
                 </Link>
               </p>
-              <p className="min-w-[160px]">{lead.status} </p>
-              <p className="min-w-[160px]"> {lead.salesAgent.name}</p>
+              <p className="min-w-[160px]">{lead.status}</p>
+              <p className="min-w-[160px]">{lead.salesAgent.name}</p>
               <p className="min-w-[160px]">{lead.priority}</p>
               <p className="min-w-[160px]">{lead.timeToClose}</p>
             </li>
           ))}
         </ul>
-        <hr />
-        {/* filters by status or sales agent */}
-        <div className="py-2 px-3 flex gap-2 items-center">
-          <h4 className="font-bold">Filters: </h4>
-          <div className="flex gap-3 items-center">
-            <label className="block " htmlFor="status">
-              Filter By Status
-            </label>
-            <select
-              className="border py-2 px-2"
-              onChange={(e) => filterByStatus(e)}
-              name="status"
-              id="status"
-            >
-              <option value="">select</option>
-              {status.map((stat, index) => (
-                <option key={index} value={stat}>
-                  {stat}
-                </option>
-              ))}
-            </select>
+
+        <hr className="my-6 border-gray-300" />
+
+        {/* Filters Section */}
+        <h4 className="font-semibold text-2xl px-3">Filters:</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-4 rounded-lg shadow-md">
+          <div className="py-3 bg-gray-100 rounded-lg">
+            <SelectComponent options={leadStatus} inputChangeHandler={filterByStatus} name="status" label="By Status" />
           </div>
-          <div className="py-1 px-3 flex gap-3">
-            <div className="flex gap-3 items-center">
-              <label className="block" htmlFor="salesAgent">
-                Filter By Sales Agent
-              </label>
-              <select
-                onChange={(e) => filterBySalesAgent(e)}
-                className="border py-2 px-2"
-                name="salesAgent"
-                id="salesAgent"
-              >
-                <option value="">select</option>
-                {agents.map((agent) => (
-                  <option key={agent._id} value={agent.name}>
-                    {agent.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="py-3 bg-gray-100 rounded-lg">
+            <SelectComponent inputChangeHandler={filterBySalesAgent} label="By Sales Agent" name="salesAgent" options={agentNames} />
+          </div>
+          <div className="py-3 bg-gray-100 rounded-lg">
+            <SelectComponent label="By Tag" options={crmTags} name="tags" inputChangeHandler={filterByTagName} />
+          </div>
+          <div className="py-3 bg-gray-100 rounded-lg">
+            <SelectComponent name="source" options={leadSource} inputChangeHandler={filterBySource} label="By Source" />
           </div>
         </div>
-        {/* sort by  */}
-        <div className="py-1 px-3 flex gap-3">
-          <p className="font-bold">Sort By: </p>
-          <button onClick={sortByPriority}>Priority</button>
-          <button onClick={sortByTimeToClose}>Time To Close</button>
+
+        {/* Sort Section */}
+        <div className="py-3 px-3 flex flex-wrap items-center gap-3">
+          <p className="font-semibold text-lg">Sort By:</p>
+          <button
+            onClick={sortByPriority}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-all"
+          >
+            Priority
+          </button>
+          <button
+            onClick={sortByTimeToClose}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-all"
+          >
+            Time To Close
+          </button>
         </div>
+
+        {/* Add New Lead */}
         <Link
           to={"/newlead"}
-          className="px-3 py-3 block font-medium text-blue-600 dark:text-blue-500 hover:underline"
+          className="mt-4 inline-block text-blue-600 hover:underline font-medium"
         >
-          Add New Lead
+          ➕ Add New Lead
         </Link>
-      </div>
+      </section>
     </div>
   );
 };

@@ -28,35 +28,56 @@ const NewAgent = () => {
   };
 
   return (
-    <div className="container mx-auto px-5 py-3">
-      <h1 className="text-3xl my-5"> Add New Sales Agent </h1>
-      <form onSubmit={handleSubmit} method="post">
-        <div className="my-3">
-          <label className="block py-2" htmlFor="name">Agent Name:</label>
-          <input
-          className="border py-2 px-3 w-full"
-            type="text"
-            id="name"
-            name="name"
-            value={agent.name}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="my-3">
-          <label className="block py-2" htmlFor="email">Email Address:</label>
-          <input
-           className="border py-2 px-3 w-full"
-            type="email"
-            id="email"
-            name="email"
-            onChange={handleInputChange}
-            value={agent.email}
-          />
-        </div>
-        {loading && <p>Loading.......</p>}
-        {error && <p>{error}</p>}
-        <button className="py-2 px-3 text-2xl  bg-black  text-white" type="submit">Create Agent</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        {/* Page Title */}
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Add New Sales Agent</h1>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} method="post" className="space-y-5">
+          {/* Agent Name */}
+          <div>
+            <label className="block text-gray-700 font-medium">Agent Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="w-full border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              value={agent.name}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          {/* Email Address */}
+          <div>
+            <label className="block text-gray-700 font-medium">Email Address:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className="w-full border border-gray-300 p-3 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              onChange={handleInputChange}
+              value={agent.email}
+              required
+            />
+          </div>
+
+          {/* Error & Loading Messages */}
+          <div>
+            {loading && <p className="text-green-600 text-center">Loading...</p>}
+            {error && <p className="text-red-600 text-center">{error}</p>}
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white text-xl font-semibold rounded-lg transition-all"
+          >
+            Create Agent
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

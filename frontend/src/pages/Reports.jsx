@@ -25,47 +25,55 @@ const Reports = () => {
   const closedLeadData = processBarData(closedLeads);
 
   return (
-    <>
-      <h1 className="py-3 px-4 text-3xl text-center font-bold">
-        OpportuniCRM Reports
-      </h1>
-      <div className="flex container mx-auto py-4 gap-2">
+    <div className="min-h-screen bg-gray-100 py-6">
+      {/* Page Title */}
+      <h1 className="text-3xl font-bold text-center text-gray-800">OpportuniCRM Reports</h1>
+
+      <div className="flex flex-col md:flex-row container mx-auto py-6 gap-6">
         {/* Sidebar */}
-        <div className="w-40">
+        <aside className="w-full md:w-64 bg-white shadow-md p-5 rounded-lg">
           <Link
-            className="py-4  text-2xl font-medium text-blue-600 dark:text-blue-500 hover:underline"
-            to={"/"}
+            className="text-2xl font-semibold text-blue-600 dark:text-blue-500 hover:underline block"
+            to="/"
           >
-            Back To Dashboard
+            ⬅ Back To Dashboard
           </Link>
-        </div>
-        {/* Report Screen */}
-        <div className="border w-full container">
-          <h2 className="py-3 px-4 text-2xl text-center font-medium border m-3">
+        </aside>
+
+        {/* Report Section */}
+        <section className="w-full bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-2xl font-semibold text-center border-b pb-3 text-gray-800">
             Report Overview
           </h2>
-          <hr />
-          {/* Pie Chart */}
-          <div className="flex justify-around items-center border m-3">
-            <p className="text-3xl font-medium">Total Leads Closed and In Pipeline</p>
-            <LeadsPieChart data={closedAndPipelineData} />
+
+          {/* Pie Chart - Total Leads */}
+          <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 shadow-sm p-6 rounded-lg mt-6">
+            <p className="text-xl font-medium text-gray-700">Total Leads Closed and In Pipeline</p>
+            <div className="w-64 h-64">
+              <LeadsPieChart data={closedAndPipelineData} />
+            </div>
           </div>
-          {/* Bar Chart */}
-          <div className="border m-3">
-            <p className="py-3 px-4 font-medium">
-              Leads Closed by Sales Agent:{" "}
+
+          {/* Bar Chart - Leads Closed by Sales Agent */}
+          <div className="bg-gray-50 shadow-sm p-6 rounded-lg mt-6">
+            <p className="text-xl font-medium text-gray-700">
+              Leads Closed by Sales Agent:
             </p>
-            <LeadsBarChart data={closedLeadData} />
-            <div />
+            <div className="w-full">
+              <LeadsBarChart data={closedLeadData} />
+            </div>
           </div>
-          {/* Pie Chart */}
-          <div className="border m-3 flex items-center justify-around">
-            <p className="text-3xl font-medium">Lead Distribution by status:</p>
-            <LeadsPieChart data={leadDistributedData} />
+
+          {/* Pie Chart - Lead Distribution */}
+          <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 shadow-sm p-6 rounded-lg mt-6">
+            <p className="text-xl font-medium text-gray-700">Lead Distribution by Status:</p>
+            <div className="w-64 h-64">
+              <LeadsPieChart data={leadDistributedData} />
+            </div>
           </div>
-        </div>
+        </section>
       </div>
-    </>
+    </div>
   );
 };
 
