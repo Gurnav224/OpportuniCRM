@@ -18,9 +18,6 @@ export const useFetch = (baseUrl) => {
       try {
         const response = await axios.get(`${baseUrl}${endpoint}`, { params });
 
-        console.log("endpoint", endpoint);
-        console.log("params", params);
-
         if (endpoint === `/leads/${params.leadId}`) {
           setLead(response?.data);
         }
@@ -36,7 +33,6 @@ export const useFetch = (baseUrl) => {
         if (endpoint === "/comment") {
           setComments(response.data);
         }
-
 
         return response?.data;
       } catch (error) {
@@ -87,5 +83,16 @@ export const useFetch = (baseUrl) => {
     [baseUrl]
   );
 
-  return { data, loading, error, post, get, leads, agents, lead, put, comments };
+  return {
+    data,
+    loading,
+    error,
+    post,
+    get,
+    leads,
+    agents,
+    lead,
+    put,
+    comments,
+  };
 };
