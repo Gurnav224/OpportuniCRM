@@ -56,19 +56,19 @@ export const createLead = async (req, res) => {
 
 export const getLead = async (req, res) => {
   const query = {};
-  if (
-    req.query.salesAgent &&
-    !mongoose.Types.ObjectId.isValid(req.query.salesAgent)
-  ) {
+  const { sortBy, salesAgent, status, source, name, order , tag, priority } = req.query;
+
+  console.log(req.query)
+  if (salesAgent && !mongoose.Types.ObjectId.isValid(salesAgent)) {
     return res
       .status(400)
       .json({ error: "salesAgent must be a valid ObjectId" });
   }
 
   if (
-    req.query.status &&
+    status &&
     !["New", "Contacted", "Qualified", "Proposal Sent", "Closed"].includes(
-      req.query.status
+      status
     )
   ) {
     return res.status(400).json({
@@ -77,7 +77,7 @@ export const getLead = async (req, res) => {
   }
 
   if (
-    req.query.source &&
+    source &&
     ![
       "Website",
       "Referral",
@@ -85,38 +85,71 @@ export const getLead = async (req, res) => {
       "Advertisement",
       "Email",
       "Other",
-    ].includes(req.query.source)
+    ].includes(source)
   ) {
     return res.status(400).json({
       error: `Invalid input: 'source' must be one of [ "Website" , "Referral" , "Cold Call" , "Advertisement" , "Email" , "Other" ,].`,
     });
   }
 
-  if (req.query.salesAgent) {
-    query.salesAgent = req.query.salesAgent;
+  if (salesAgent) {
+    query.salesAgent = salesAgent;
   }
 
-  if (req.query.status) {
-    query.status = req.query.status;
+  if (status) {
+    query.status = status;
+  }
+  if(tag){
+    query.tags = tag;
   }
 
-  if (req.query.name) {
-    const agent = await Agent.findOne({ name: req.query.name });
+  if(source){
+    query.source = source;
+  }
+
+  if (name) {
+    const agent = await Agent.findOne({ name });
     if (!agent) {
       return res.status(404).json({ message: "Agent not found" });
     }
     query.salesAgent = agent._id;
   }
 
+  if(priority){
+    query.priority = priority
+  }
+
+
+
   let sortQuery = {};
 
-  if (req.query.sortBy) {
-    const sortOrder = req.query.order === "desc" ? -1 : 1;
-    sortQuery[req.query.sortBy] = sortOrder;
+  if (sortBy === "timeToClose") {
+    const sortOrder = order === "desc" ? -1 : 1;
+    sortQuery.timeToClose = sortOrder;
   }
+
+  const sortOrder = order === "desc" ? -1 : 1;
 
   try {
     const leads = await Lead.find(query).populate("salesAgent").sort(sortQuery);
+
+    if (sortBy === "priority") {
+      // Map each priority to a numeric value
+      const priorityMap = { High: 3, Medium: 2, Low: 1 };
+      leads.sort((a, b) => {
+        const aVal = priorityMap[a.priority] || 4;
+        const bVal = priorityMap[b.priority] || 4;
+        return sortOrder * (aVal - bVal);
+      });
+    } else if (sortBy) {
+      // For other fields, use default sorting (or a custom sort function if needed)
+      leads.sort((a, b) => {
+        if (a[sortBy] < b[sortBy]) return -sortOrder;
+        if (a[sortBy] > b[sortBy]) return sortOrder;
+        return 0;
+      });
+    }
+
     res.status(200).json(leads);
   } catch (error) {
     console.error("error failed to get the all leads", error);
