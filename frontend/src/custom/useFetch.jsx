@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useCallback, useState } from "react";
 
-export const useFetch = (baseUrl) => {
+const baseUrl = import.meta.env.VITE_API_URL;
+
+export const useFetch = () => {
   const [leads, setLeads] = useState([]);
   const [agents, setAgents] = useState([]);
   const [data, setData] = useState({});
