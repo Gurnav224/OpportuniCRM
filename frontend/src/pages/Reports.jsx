@@ -25,7 +25,7 @@ const Reports = () => {
   const closedLeadData = processBarData(closedLeads);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6">
+    <div className="min-h-screen w-screen bg-gray-100 py-6">
       {/* Page Title */}
       <h1 className="text-3xl font-bold text-center text-gray-800">OpportuniCRM Reports</h1>
 
@@ -47,11 +47,9 @@ const Reports = () => {
           </h2>
 
           {/* Pie Chart - Total Leads */}
-          <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 shadow-sm p-6 rounded-lg mt-6">
+          <div className="flex flex-col md:flex-row items-center justify-around bg-gray-50 shadow-sm  rounded-lg mt-6 p-10">
             <p className="text-xl font-medium text-gray-700">Total Leads Closed and In Pipeline</p>
-            <div className="w-64 h-64">
               <LeadsPieChart data={closedAndPipelineData} />
-            </div>
           </div>
 
           {/* Bar Chart - Leads Closed by Sales Agent */}
@@ -65,11 +63,10 @@ const Reports = () => {
           </div>
 
           {/* Pie Chart - Lead Distribution */}
-          <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 shadow-sm p-6 rounded-lg mt-6">
+          <div className="flex flex-col md:flex-row items-center justify-around bg-gray-50 shadow-sm p-6 rounded-lg mt-6">
             <p className="text-xl font-medium text-gray-700">Lead Distribution by Status:</p>
-            <div className="w-64 h-64">
+           
               <LeadsPieChart data={leadDistributedData} />
-            </div>
           </div>
         </section>
       </div>
