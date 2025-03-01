@@ -1,6 +1,9 @@
 import { createContext, useContext, useEffect } from "react";
 import { useFetch } from "../custom/useFetch";
-import { data } from "react-router-dom";
+
+
+
+
 
 const LeadContext = createContext();
 
@@ -11,7 +14,9 @@ export const LeadProvider = ({ children }) => {
     loading,
     error,
     agents
-  } = useFetch("http://localhost:3000/api");
+  } = useFetch();
+
+
 
   useEffect(() => {
     get("/leads");
