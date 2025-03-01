@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useFetch } from "../custom/useFetch";
+import { Link } from "react-router-dom";
 
 const NewAgent = () => {
-  const {  post , error , loading, } = useFetch("http://localhost:3000/api");
+  const {  post , error , loading, } = useFetch();
 
   const [agent, setAgent] = useState({
     email: "",
@@ -28,7 +29,16 @@ const NewAgent = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex flex-col md:flex-row container mx-auto py-6 gap-6">
+        {/* Sidebar */}
+        <aside className="w-full md:w-64 bg-white shadow-lg p-5 rounded-lg">
+        <Link
+          className="text-2xl font-semibold text-blue-600 dark:text-blue-500 hover:underline block"
+          to={"/"}
+        >
+          ⬅ Back To Dashboard
+        </Link>
+      </aside>
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
         {/* Page Title */}
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Add New Sales Agent</h1>

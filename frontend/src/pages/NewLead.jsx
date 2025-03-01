@@ -5,6 +5,8 @@ import SelectComponent from "../components/Select";
 import { leadSource, leadStatus, crmTags, priorityOptions } from "../utils/selectValues";
 import { useLocation, useNavigate , Link} from "react-router-dom";
 
+
+
 const NewLead = () => {
   const [clearSelectedTag, setClearSelectedTag] = useState("");
   const [clearSelectedAgent, setClearSelectedAgent] = useState("");
@@ -28,7 +30,7 @@ const NewLead = () => {
   }, [state]);
 
   const { get, post, error, loading, agents, put } = useFetch(
-    "http://localhost:3000/api"
+  
   );
 
   const options = (Array.isArray(agents) ? agents : []).map((agent) => ({
@@ -102,6 +104,9 @@ const NewLead = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-6">
     {/* Page Header */}
+
+ 
+
     <h1 className="text-3xl font-bold text-center text-gray-800">  
       {state ? "Edit Lead" : "Add New Lead"}
     </h1>
